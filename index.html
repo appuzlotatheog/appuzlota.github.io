@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>appuzlota // Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* * ===================================================================
+         * Base & Theming: Brutalism meets Y2K (Azure Blue Theme)
+         * ===================================================================
+         */
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #0A0A0A;
+            color: #E0E0E0;
+            overflow-x: hidden;
+        }
+
+        /* Y2K Grainy/Static Background */
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            overflow: hidden;
+            background: #0A0A0A;
+        }
+        .noise-bg::before {
+            content: "";
+            position: absolute;
+            top: -50%; left: -50%;
+            width: 200%; height: 200%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMDAgMzAwIj48ZmlsdGVyIGlkPSJub2lzZSI+PGZlVHVyYnVsZW5jZSB0eXBlPSJmcmFjdGFsTm9pc2UiIGJhc2VGcmVxdWVuY3k9IjAuODUiIG51bU9jdGF2ZXM9IjMiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48L2ZpbHRlcj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWx0ZXI9InVybCgjbm9pc2UpIi8+PC9zdmc+');
+            opacity: 0.04;
+            animation: noise 0.2s infinite;
+        }
+        @keyframes noise {
+            0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); }
+        }
+
+        /* * ===================================================================
+         * Bento Grid & Card Styling
+         * ===================================================================
+         */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            grid-auto-rows: minmax(150px, auto);
+            gap: 1rem;
+        }
+        .bento-item {
+            background-color: rgba(20, 20, 20, 0.8);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            position: relative;
+            overflow: hidden;
+        }
+        .bento-item:hover {
+            border-color: #777;
+            transform: translateY(-4px);
+        }
+
+        /* Spanning items in the grid */
+        .col-span-6 { grid-column: span 6; }
+        .col-span-4 { grid-column: span 6; }
+        .col-span-2 { grid-column: span 6; }
+        .row-span-2 { grid-row: span 2; }
+        
+        @media (min-width: 1024px) {
+            .lg\:col-span-4 { grid-column: span 4; }
+            .lg\:col-span-2 { grid-column: span 2; }
+            .lg\:row-span-2 { grid-row: span 2; }
+        }
+
+        /* * ===================================================================
+         * Typography & UI Elements
+         * ===================================================================
+         */
+        h1, h2, h3 { font-family: 'VT323', monospace; }
+        .y2k-glow { text-shadow: 0 0 8px rgba(0, 175, 255, 0.7); }
+        .accent-color { color: #00AFFF; }
+
+        .brutalist-btn {
+            background-color: #00AFFF;
+            color: #0A0A0A;
+            font-family: 'VT323', monospace;
+            font-size: 1.25rem;
+            padding: 0.5rem 1.5rem;
+            border: 2px solid #00AFFF;
+            box-shadow: 4px 4px 0px #E0E0E0;
+            transition: all 0.2s ease-in-out;
+            text-transform: uppercase;
+        }
+        .brutalist-btn:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #E0E0E0;
+        }
+        .brutalist-btn:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px #E0E0E0;
+        }
+
+        .skill-tag {
+            border: 1px solid #555;
+            background-color: #222;
+            transition: all 0.2s ease;
+        }
+        .skill-tag:hover {
+            background-color: #00AFFF;
+            color: #0A0A0A;
+            border-color: #00AFFF;
+        }
+
+        /* * ===================================================================
+         * Animations
+         * ===================================================================
+         */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .scroll-animate.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #three-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 lg:p-8">
+    <div class="noise-bg"></div>
+
+    <main class="max-w-7xl mx-auto">
+        <div class="bento-grid">
+            
+            <!-- Hero Section (3D Element) -->
+            <div class="bento-item lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
+                <div class="relative z-10">
+                    <h1 class="text-6xl md:text-8xl lg:text-9xl y2k-glow accent-color">appuzlota</h1>
+                    <p class="text-xl md:text-2xl mt-2 text-gray-300">Developer & Aspiring Entrepreneur</p>
+                </div>
+                <div class="relative z-10 text-gray-400 text-sm">
+                    <p>Status: <span class="accent-color">Online</span></p>
+                    <p>Location: The Digital Frontier</p>
+                </div>
+                <canvas id="three-canvas"></canvas>
+            </div>
+
+            <!-- About Me -->
+            <div class="bento-item lg:col-span-2 lg:row-span-2 flex flex-col justify-center scroll-animate" style="transition-delay: 100ms;">
+                <h2 class="text-4xl accent-color mb-4">SYSTEM.ID</h2>
+                <p class="text-gray-300 leading-relaxed">
+                    Student & future-focused entrepreneur exploring the intersections of AI, new tech, and science. 
+                    I'm an introvert who finds clarity in code and complexity. My goal is to build something that matters.
+                </p>
+            </div>
+
+            <!-- Skills -->
+            <div class="bento-item lg:col-span-3 scroll-animate" style="transition-delay: 200ms;">
+                <h2 class="text-4xl accent-color mb-4">SKILLSET.EXE</h2>
+                <div class="flex flex-wrap gap-3">
+                    <span class="skill-tag text-lg px-4 py-2 rounded-md">Python</span>
+                    <span class="skill-tag text-lg px-4 py-2 rounded-md">JavaScript</span>
+                    <span class="skill-tag text-lg px-4 py-2 rounded-md">AI Concepts</span>
+                    <span class="skill-tag text-lg px-4 py-2 rounded-md">New Technologies</span>
+                    <span class="skill-tag text-lg px-4 py-2 rounded-md">Scientific Mindset</span>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div class="bento-item lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
+                <h2 class="text-4xl accent-color mb-4">CONTACT.CMD</h2>
+                <p class="mb-6 text-gray-400">Connect with me on Discord.</p>
+                <div class="relative">
+                    <button id="discord-button" class="brutalist-btn">
+                        ID: appuzlota
+                    </button>
+                    <span id="copy-feedback" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300">COPIED</span>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    
+    <footer class="text-center text-gray-600 font-mono text-sm py-8 mt-8">
+        <p>&copy; 2025 appuzlota // All systems operational.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            
+            /*
+             * ===================================================================
+             * Immersive 3D Element (three.js)
+             * Symbolic representation of ambition and growth.
+             * ===================================================================
+             */
+            const canvasContainer = document.querySelector('.lg\\:col-span-4');
+            const canvas = document.getElementById('three-canvas');
+            if (canvas && canvasContainer) {
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+                renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+                
+                const material = new THREE.MeshBasicMaterial({ color: 0x00AFFF, wireframe: true });
+
+                // The main group that holds all crystals
+                const crystalGroup = new THREE.Group();
+                scene.add(crystalGroup);
+
+                // The central core crystal - represents the main ambition
+                const coreGeometry = new THREE.IcosahedronGeometry(1.5, 0);
+                const coreCrystal = new THREE.Mesh(coreGeometry, material);
+                crystalGroup.add(coreCrystal);
+
+                // Smaller growing crystals - represent new ideas, skills, and projects
+                const growingCrystals = [];
+                const crystalGeometry = new THREE.OctahedronGeometry(0.5, 0);
+
+                for (let i = 0; i < 10; i++) {
+                    const crystal = new THREE.Mesh(crystalGeometry, material);
+                    
+                    // Position them randomly on the surface of a sphere
+                    const phi = Math.acos(-1 + (2 * i) / 10);
+                    const theta = Math.sqrt(10 * Math.PI) * phi;
+                    
+                    crystal.position.setFromSphericalCoords(2.5, phi, theta);
+                    
+                    // Give them a random rotation
+                    crystal.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+
+                    // Set initial scale to almost zero
+                    crystal.scale.set(0.01, 0.01, 0.01);
+                    
+                    growingCrystals.push(crystal);
+                    crystalGroup.add(crystal);
+                }
+
+                camera.position.z = 7;
+
+                const mouse = new THREE.Vector2();
+                
+                function onMouseMove(event) {
+                    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+                    mouse.y = - (event.clientY / window.innerHeight) * 2 + 1;
+                }
+                window.addEventListener('mousemove', onMouseMove);
+
+                let time = 0;
+                function animate() {
+                    requestAnimationFrame(animate);
+                    time += 0.01;
+
+                    // Rotate the entire group
+                    crystalGroup.rotation.x += 0.0005;
+                    crystalGroup.rotation.y += 0.0005;
+
+                    // Animate the growth of smaller crystals
+                    growingCrystals.forEach((crystal, index) => {
+                        const scale = (Math.sin(time + index) + 1) / 2 * 0.5 + 0.1; // Oscillates scale
+                        crystal.scale.set(scale, scale, scale);
+                    });
+                    
+                    // Make camera subtly react to mouse
+                    camera.position.x += (mouse.x * 2 - camera.position.x) * 0.02;
+                    camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
+                    camera.lookAt(scene.position);
+
+                    renderer.render(scene, camera);
+                }
+                animate();
+
+                // Handle responsive resize
+                window.addEventListener('resize', () => {
+                    camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+                });
+            }
+
+            /*
+             * ===================================================================
+             * Scroll-Triggered Animations (Intersection Observer)
+             * ===================================================================
+             */
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.scroll-animate').forEach(el => {
+                observer.observe(el);
+            });
+
+            /*
+             * ===================================================================
+             * Micro-Animations & Interactions
+             * ===================================================================
+             */
+            const discordButton = document.getElementById('discord-button');
+            const copyFeedback = document.getElementById('copy-feedback');
+            const discordId = 'appuzlota';
+
+            discordButton.addEventListener('click', () => {
+                const textArea = document.createElement('textarea');
+                textArea.value = discordId;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    copyFeedback.style.opacity = '1';
+                    setTimeout(() => { copyFeedback.style.opacity = '0'; }, 2000);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                }
+                document.body.removeChild(textArea);
+            });
+        });
+    </script>
+</body>
+</html>
