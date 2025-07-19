@@ -18,7 +18,7 @@
             font-family: 'Space Mono', monospace;
             background-color: #0A0A0A;
             color: #E0E0E0;
-            overflow-x: hidden;
+            overflow-x: hidden; /* Prevents horizontal scroll */
         }
 
         /* Y2K Grainy/Static Background */
@@ -43,44 +43,6 @@
         }
         @keyframes noise {
             0%, 100% { transform: translate(0, 0); } 10% { transform: translate(-5%, -10%); } 20% { transform: translate(-15%, 5%); } 30% { transform: translate(7%, -25%); } 40% { transform: translate(-5%, 25%); } 50% { transform: translate(-15%, 10%); } 60% { transform: translate(15%, 0%); } 70% { transform: translate(0%, 15%); } 80% { transform: translate(3%, 35%); } 90% { transform: translate(-10%, 10%); }
-        }
-
-        /* * ===================================================================
-         * Bento Grid & Card Styling
-         * ===================================================================
-         */
-        .bento-grid {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            grid-auto-rows: minmax(150px, auto);
-            gap: 1rem;
-        }
-        .bento-item {
-            background-color: rgba(20, 20, 20, 0.8);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            position: relative;
-            overflow: hidden;
-        }
-        .bento-item:hover {
-            border-color: #777;
-            transform: translateY(-4px);
-        }
-
-        /* Spanning items in the grid */
-        .col-span-6 { grid-column: span 6; }
-        .col-span-4 { grid-column: span 6; }
-        .col-span-2 { grid-column: span 6; }
-        .row-span-2 { grid-row: span 2; }
-        
-        @media (min-width: 1024px) {
-            .lg\:col-span-4 { grid-column: span 4; }
-            .lg\:col-span-2 { grid-column: span 2; }
-            .lg\:row-span-2 { grid-row: span 2; }
         }
 
         /* * ===================================================================
@@ -123,12 +85,12 @@
         }
 
         /* * ===================================================================
-         * Animations
+         * Animations & 3D Canvas
          * ===================================================================
          */
         .scroll-animate {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
             transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
         .scroll-animate.is-visible {
@@ -145,17 +107,23 @@
         }
     </style>
 </head>
-<body class="p-4 md:p-6 lg:p-8">
+<body class="p-4 md:p-6">
     <div class="noise-bg"></div>
 
-    <main class="max-w-7xl mx-auto">
-        <div class="bento-grid">
+    <main class="max-w-6xl mx-auto">
+        <!-- 
+          BENTO GRID LAYOUT
+          - Mobile: A single column stack (default behavior of block elements)
+          - Tablet (md): A 2-column grid
+          - Desktop (lg): A 6-column grid for complex layouts
+        -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
             
             <!-- Hero Section (3D Element) -->
-            <div class="bento-item lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
+            <div class="bento-item h-[400px] md:h-auto md:col-span-2 lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
                 <div class="relative z-10">
-                    <h1 class="text-6xl md:text-8xl lg:text-9xl y2k-glow accent-color">appuzlota</h1>
-                    <p class="text-xl md:text-2xl mt-2 text-gray-300">Developer & Aspiring Entrepreneur</p>
+                    <h1 class="text-6xl md:text-7xl lg:text-9xl y2k-glow accent-color">appuzlota</h1>
+                    <p class="text-lg md:text-xl lg:text-2xl mt-2 text-gray-300">Developer & Aspiring Entrepreneur</p>
                 </div>
                 <div class="relative z-10 text-gray-400 text-sm">
                     <p>Status: <span class="accent-color">Online</span></p>
@@ -165,7 +133,7 @@
             </div>
 
             <!-- About Me -->
-            <div class="bento-item lg:col-span-2 lg:row-span-2 flex flex-col justify-center scroll-animate" style="transition-delay: 100ms;">
+            <div class="bento-item md:col-span-2 lg:col-span-2 lg:row-span-2 flex flex-col justify-center scroll-animate" style="transition-delay: 100ms;">
                 <h2 class="text-4xl accent-color mb-4">SYSTEM.ID</h2>
                 <p class="text-gray-300 leading-relaxed">
                     Student & future-focused entrepreneur exploring the intersections of AI, new tech, and science. 
@@ -174,19 +142,19 @@
             </div>
 
             <!-- Skills -->
-            <div class="bento-item lg:col-span-3 scroll-animate" style="transition-delay: 200ms;">
+            <div class="bento-item md:col-span-1 lg:col-span-3 scroll-animate" style="transition-delay: 200ms;">
                 <h2 class="text-4xl accent-color mb-4">SKILLSET.EXE</h2>
                 <div class="flex flex-wrap gap-3">
-                    <span class="skill-tag text-lg px-4 py-2 rounded-md">Python</span>
-                    <span class="skill-tag text-lg px-4 py-2 rounded-md">JavaScript</span>
-                    <span class="skill-tag text-lg px-4 py-2 rounded-md">AI Concepts</span>
-                    <span class="skill-tag text-lg px-4 py-2 rounded-md">New Technologies</span>
-                    <span class="skill-tag text-lg px-4 py-2 rounded-md">Scientific Mindset</span>
+                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">Python</span>
+                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">JavaScript</span>
+                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">AI Concepts</span>
+                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">New Tech</span>
+                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">Science</span>
                 </div>
             </div>
 
             <!-- Contact -->
-            <div class="bento-item lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
+            <div class="bento-item md:col-span-1 lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
                 <h2 class="text-4xl accent-color mb-4">CONTACT.CMD</h2>
                 <p class="mb-6 text-gray-400">Connect with me on Discord.</p>
                 <div class="relative">
@@ -200,63 +168,56 @@
         </div>
     </main>
     
-    <footer class="text-center text-gray-600 font-mono text-sm py-8 mt-8">
+    <footer class="text-center text-gray-600 font-mono text-sm py-8 mt-6">
         <p>&copy; 2025 appuzlota // All systems operational.</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             
+            // Shared Bento Item Style
+            const bentoItems = document.querySelectorAll('.bento-item');
+            bentoItems.forEach(item => {
+                item.classList.add('bg-black/60', 'border', 'border-gray-800', 'rounded-lg', 'p-6', 'relative', 'overflow-hidden', 'backdrop-blur-sm');
+                item.addEventListener('mouseenter', () => item.style.borderColor = '#00AFFF');
+                item.addEventListener('mouseleave', () => item.style.borderColor = 'rgb(31 41 55 / 1)');
+            });
+
             /*
              * ===================================================================
-             * Immersive 3D Element (three.js)
-             * Symbolic representation of ambition and growth.
+             * Immersive 3D Element (three.js) - with robust resizing
              * ===================================================================
              */
-            const canvasContainer = document.querySelector('.lg\\:col-span-4');
+            const canvasContainer = document.querySelector('#three-canvas').parentElement;
             const canvas = document.getElementById('three-canvas');
             if (canvas && canvasContainer) {
                 const scene = new THREE.Scene();
                 const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
                 const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-                renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
                 
                 const material = new THREE.MeshBasicMaterial({ color: 0x00AFFF, wireframe: true });
-
-                // The main group that holds all crystals
                 const crystalGroup = new THREE.Group();
                 scene.add(crystalGroup);
 
-                // The central core crystal - represents the main ambition
                 const coreGeometry = new THREE.IcosahedronGeometry(1.5, 0);
                 const coreCrystal = new THREE.Mesh(coreGeometry, material);
                 crystalGroup.add(coreCrystal);
 
-                // Smaller growing crystals - represent new ideas, skills, and projects
                 const growingCrystals = [];
                 const crystalGeometry = new THREE.OctahedronGeometry(0.5, 0);
 
                 for (let i = 0; i < 10; i++) {
                     const crystal = new THREE.Mesh(crystalGeometry, material);
-                    
-                    // Position them randomly on the surface of a sphere
                     const phi = Math.acos(-1 + (2 * i) / 10);
                     const theta = Math.sqrt(10 * Math.PI) * phi;
-                    
                     crystal.position.setFromSphericalCoords(2.5, phi, theta);
-                    
-                    // Give them a random rotation
                     crystal.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
-
-                    // Set initial scale to almost zero
                     crystal.scale.set(0.01, 0.01, 0.01);
-                    
                     growingCrystals.push(crystal);
                     crystalGroup.add(crystal);
                 }
 
                 camera.position.z = 7;
-
                 const mouse = new THREE.Vector2();
                 
                 function onMouseMove(event) {
@@ -269,32 +230,30 @@
                 function animate() {
                     requestAnimationFrame(animate);
                     time += 0.01;
-
-                    // Rotate the entire group
                     crystalGroup.rotation.x += 0.0005;
                     crystalGroup.rotation.y += 0.0005;
-
-                    // Animate the growth of smaller crystals
                     growingCrystals.forEach((crystal, index) => {
-                        const scale = (Math.sin(time + index) + 1) / 2 * 0.5 + 0.1; // Oscillates scale
+                        const scale = (Math.sin(time + index) + 1) / 2 * 0.5 + 0.1;
                         crystal.scale.set(scale, scale, scale);
                     });
-                    
-                    // Make camera subtly react to mouse
                     camera.position.x += (mouse.x * 2 - camera.position.x) * 0.02;
                     camera.position.y += (mouse.y * 2 - camera.position.y) * 0.02;
                     camera.lookAt(scene.position);
-
                     renderer.render(scene, camera);
                 }
-                animate();
-
-                // Handle responsive resize
-                window.addEventListener('resize', () => {
-                    camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+                
+                // Robust resize handler
+                function handleResize() {
+                    const width = canvasContainer.clientWidth;
+                    const height = canvasContainer.clientHeight;
+                    camera.aspect = width / height;
                     camera.updateProjectionMatrix();
-                    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
-                });
+                    renderer.setSize(width, height);
+                }
+                
+                window.addEventListener('resize', handleResize);
+                handleResize(); // Initial call
+                animate();
             }
 
             /*
@@ -310,9 +269,7 @@
                 });
             }, { threshold: 0.1 });
 
-            document.querySelectorAll('.scroll-animate').forEach(el => {
-                observer.observe(el);
-            });
+            document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
 
             /*
              * ===================================================================
