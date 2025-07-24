@@ -18,7 +18,7 @@
             font-family: 'Space Mono', monospace;
             background-color: #0A0A0A;
             color: #E0E0E0;
-            overflow-x: hidden; /* Prevents horizontal scroll */
+            overflow-x: hidden;
         }
 
         /* Y2K Grainy/Static Background */
@@ -105,27 +105,74 @@
             height: 100%;
             z-index: 1;
         }
+
+        /* * ===================================================================
+         * Scramble Text Animation
+         * ===================================================================
+         */
+        .scramble-text {
+            cursor: default;
+        }
+        .scramble-text .char {
+            display: inline-block;
+            will-change: transform;
+            transition: color 0.3s ease;
+            white-space: pre;
+        }
+        .scramble-text .char.scrambling {
+            color: #00AFFF;
+            animation: glitch 0.1s infinite;
+        }
+        @keyframes glitch {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-1px); }
+            50% { transform: translateX(1px); }
+            75% { transform: translateX(-0.5px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* * ===================================================================
+         * Live Age Counter
+         * ===================================================================
+         */
+        .age-counter {
+            font-family: 'VT323', monospace;
+            font-size: 1.25rem;
+            color: #00AFFF;
+            margin-top: 1.5rem;
+        }
+        .age-value {
+            font-size: 1.75rem;
+            text-shadow: 0 0 10px rgba(0, 175, 255, 0.5);
+        }
+
+        /* * ===================================================================
+         * Responsive Grid Adjustments
+         * ===================================================================
+         */
+        @media (max-width: 768px) {
+            .age-counter {
+                font-size: 1rem;
+            }
+            .age-value {
+                font-size: 1.25rem;
+            }
+        }
     </style>
 </head>
 <body class="p-4 md:p-6">
     <div class="noise-bg"></div>
 
     <main class="max-w-6xl mx-auto">
-        <!-- 
-          BENTO GRID LAYOUT
-          - Mobile: A single column stack (default behavior of block elements)
-          - Tablet (md): A 2-column grid
-          - Desktop (lg): A 6-column grid for complex layouts
-        -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
             
             <!-- Hero Section (3D Element) -->
-            <div class="bento-item h-[400px] md:h-auto md:col-span-2 lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
-                <div class="relative z-10">
-                    <h1 class="text-6xl md:text-7xl lg:text-9xl y2k-glow accent-color">appuzlota</h1>
-                    <p class="text-lg md:text-xl lg:text-2xl mt-2 text-gray-300">Developer & Aspiring Entrepreneur</p>
+            <div class="bento-item min-h-[350px] md:min-h-[400px] md:col-span-2 lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
+                <div class="relative z-10 p-4 md:p-6">
+                    <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl y2k-glow accent-color">appuzlota</h1>
+                    <p class="text-base sm:text-lg md:text-xl lg:text-2xl mt-2 text-gray-300">Developer & Aspiring Entrepreneur</p>
                 </div>
-                <div class="relative z-10 text-gray-400 text-sm">
+                <div class="relative z-10 text-gray-400 text-sm p-4 md:p-6">
                     <p>Status: <span class="accent-color">Online</span></p>
                     <p>Location: The Digital Frontier</p>
                 </div>
@@ -133,42 +180,44 @@
             </div>
 
             <!-- About Me -->
-            <div class="bento-item md:col-span-2 lg:col-span-2 lg:row-span-2 flex flex-col justify-center scroll-animate" style="transition-delay: 100ms;">
-                <h2 class="text-4xl accent-color mb-4">SYSTEM.ID</h2>
-                <p class="text-gray-300 leading-relaxed">
-                    Student & future-focused entrepreneur exploring the intersections of AI, new tech, and science. 
-                    I'm an introvert who finds clarity in code and complexity. My goal is to build something that matters.
-                </p>
+            <div class="bento-item min-h-[300px] md:col-span-2 lg:col-span-2 lg:row-span-2 flex flex-col justify-center scroll-animate" style="transition-delay: 100ms;">
+                <div class="space-y-4">
+                    <h2 class="text-3xl md:text-4xl accent-color scramble-text" data-scramble-radius="50" data-scramble-duration="1.2" data-scramble-speed="0.5" data-scramble-chars=".:">SYSTEM.ID</h2>
+                    <p class="text-sm md:text-base text-gray-300 leading-relaxed scramble-text" style="word-break: keep-all; overflow-wrap: break-word; hyphens: none;">Student & future-focused entrepreneur exploring the intersections of AI, new tech, and science. I'm an introvert who finds clarity in code and complexity. My goal is to build something that matters.</p>
+                    <div class="age-counter">
+                        <p>Age: <span class="age-value" id="live-age">0.000000000</span> years</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Skills -->
-            <div class="bento-item md:col-span-1 lg:col-span-3 scroll-animate" style="transition-delay: 200ms;">
-                <h2 class="text-4xl accent-color mb-4">SKILLSET.EXE</h2>
-                <div class="flex flex-wrap gap-3">
-                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">Python</span>
-                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">JavaScript</span>
-                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">AI Concepts</span>
-                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">New Tech</span>
-                    <span class="skill-tag text-base md:text-lg px-4 py-2 rounded-md">Science</span>
+            <div class="bento-item min-h-[200px] md:col-span-1 lg:col-span-3 scroll-animate" style="transition-delay: 200ms;">
+                <h2 class="text-3xl md:text-4xl accent-color mb-4">SKILLSET.EXE</h2>
+                <div class="flex flex-wrap gap-2 md:gap-3">
+                    <span class="skill-tag text-sm md:text-base lg:text-lg px-3 md:px-4 py-1.5 md:py-2 rounded-md">Python</span>
+                    <span class="skill-tag text-sm md:text-base lg:text-lg px-3 md:px-4 py-1.5 md:py-2 rounded-md">JavaScript</span>
+                    <span class="skill-tag text-sm md:text-base lg:text-lg px-3 md:px-4 py-1.5 md:py-2 rounded-md">AI Concepts</span>
+                    <span class="skill-tag text-sm md:text-base lg:text-lg px-3 md:px-4 py-1.5 md:py-2 rounded-md">New Tech</span>
+                    <span class="skill-tag text-sm md:text-base lg:text-lg px-3 md:px-4 py-1.5 md:py-2 rounded-md">Science</span>
                 </div>
             </div>
 
             <!-- Contact -->
-            <div class="bento-item md:col-span-1 lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
-                <h2 class="text-4xl accent-color mb-4">CONTACT.CMD</h2>
-                <p class="mb-6 text-gray-400">Connect with me on Discord.</p>
+            <div class="bento-item min-h-[200px] md:col-span-1 lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
+                <h2 class="text-3xl md:text-4xl accent-color mb-4">CONTACT.CMD</h2>
+                <p class="mb-6 text-sm md:text-base text-gray-400">Connect with me on Discord.</p>
                 <div class="relative">
-                    <button id="discord-button" class="brutalist-btn">
+                    <button id="discord-button" class="brutalist-btn text-base md:text-xl">
                         ID: appuzlota
                     </button>
-                    <span id="copy-feedback" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300">COPIED</span>
+                    <span id="copy-feedback" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300 whitespace-nowrap">COPIED</span>
                 </div>
             </div>
 
         </div>
     </main>
     
-    <footer class="text-center text-gray-600 font-mono text-sm py-8 mt-6">
+    <footer class="text-center text-gray-600 font-mono text-xs md:text-sm py-8 mt-6">
         <p>&copy; 2025 appuzlota // All systems operational.</p>
     </footer>
 
@@ -181,6 +230,154 @@
                 item.classList.add('bg-black/60', 'border', 'border-gray-800', 'rounded-lg', 'p-6', 'relative', 'overflow-hidden', 'backdrop-blur-sm');
                 item.addEventListener('mouseenter', () => item.style.borderColor = '#00AFFF');
                 item.addEventListener('mouseleave', () => item.style.borderColor = 'rgb(31 41 55 / 1)');
+            });
+
+            /*
+             * ===================================================================
+             * Live Age Counter (9 decimal places)
+             * ===================================================================
+             */
+            function calculateAge() {
+                const birthDate = new Date('2010-01-29T19:10:00'); // 7:10 PM on Jan 29, 2010
+                const now = new Date();
+                const ageInMilliseconds = now - birthDate;
+                const ageInYears = ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000);
+                return ageInYears.toFixed(9);
+            }
+
+            function updateAge() {
+                const ageElement = document.getElementById('live-age');
+                if (ageElement) {
+                    ageElement.textContent = calculateAge();
+                }
+            }
+
+            // Update age every 10ms for smooth decimal changes
+            setInterval(updateAge, 10);
+            updateAge(); // Initial update
+
+            /*
+             * ===================================================================
+             * Scramble Text Animation (Fixed spacing and glitches)
+             * ===================================================================
+             */
+            class ScrambleText {
+                constructor(element) {
+                    this.element = element;
+                    this.originalText = element.textContent;
+                    this.radius = parseFloat(element.dataset.scrambleRadius) || 50;
+                    this.duration = parseFloat(element.dataset.scrambleDuration) || 1.2;
+                    this.speed = parseFloat(element.dataset.scrambleSpeed) || 0.5;
+                    this.scrambleChars = element.dataset.scrambleChars || '.:';
+                    this.chars = [];
+                    this.animationFrameId = null;
+                    this.init();
+                }
+
+                init() {
+                    // Split text into characters, preserving spaces
+                    const text = this.element.textContent;
+                    this.element.innerHTML = '';
+                    
+                                        for (let i = 0; i < text.length; i++) {
+                        const span = document.createElement('span');
+                        span.className = 'char';
+                        span.textContent = text[i];
+                        span.dataset.content = text[i];
+                        this.element.appendChild(span);
+                        this.chars.push({
+                            element: span,
+                            original: text[i],
+                            isSpace: text[i] === ' ',
+                            isAnimating: false,
+                            progress: 0,
+                            targetProgress: 0,
+                            lastScrambleTime: 0
+                        });
+                    }
+
+                    this.element.addEventListener('pointermove', this.handleMove.bind(this));
+                    this.element.addEventListener('mousemove', this.handleMove.bind(this));
+                    this.element.addEventListener('mouseleave', this.handleLeave.bind(this));
+                    
+                    // Start animation loop
+                    this.animate();
+                }
+
+                handleMove(e) {
+                    const rect = this.element.getBoundingClientRect();
+                    const mouseX = e.clientX;
+                    const mouseY = e.clientY;
+
+                    this.chars.forEach((char, index) => {
+                        const charRect = char.element.getBoundingClientRect();
+                        const charCenterX = charRect.left + charRect.width / 2;
+                        const charCenterY = charRect.top + charRect.height / 2;
+                        const dx = mouseX - charCenterX;
+                        const dy = mouseY - charCenterY;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < this.radius) {
+                            const intensity = 1 - (distance / this.radius);
+                            char.targetProgress = intensity;
+                        } else {
+                            char.targetProgress = 0;
+                        }
+                    });
+                }
+
+                handleLeave() {
+                    this.chars.forEach(char => {
+                        char.targetProgress = 0;
+                    });
+                }
+
+                animate() {
+                    const currentTime = Date.now();
+                    
+                    this.chars.forEach(char => {
+                        // Smooth interpolation
+                        const diff = char.targetProgress - char.progress;
+                        char.progress += diff * 0.15;
+
+                        if (char.progress > 0.01 && !char.isSpace) {
+                            if (!char.isAnimating) {
+                                char.isAnimating = true;
+                                char.element.classList.add('scrambling');
+                            }
+                            
+                            // Throttle scrambling to prevent excessive glitching
+                            if (currentTime - char.lastScrambleTime > 50) {
+                                if (Math.random() < char.progress * this.speed) {
+                                    const randomChar = this.scrambleChars[Math.floor(Math.random() * this.scrambleChars.length)];
+                                    char.element.textContent = randomChar;
+                                } else if (Math.random() < 0.3) {
+                                    char.element.textContent = char.original;
+                                }
+                                char.lastScrambleTime = currentTime;
+                            }
+                        } else {
+                            if (char.isAnimating) {
+                                char.isAnimating = false;
+                                char.element.classList.remove('scrambling');
+                            }
+                            char.element.textContent = char.original;
+                        }
+                    });
+
+                    this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
+                }
+
+                destroy() {
+                    if (this.animationFrameId) {
+                        cancelAnimationFrame(this.animationFrameId);
+                    }
+                }
+            }
+
+            // Initialize scramble text on all elements with the class
+            document.querySelectorAll('.scramble-text').forEach(element => {
+                new ScrambleText(element);
             });
 
             /*
