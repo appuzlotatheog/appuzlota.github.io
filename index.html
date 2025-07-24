@@ -4,6 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>appuzlota // Developer</title>
+    <!-- Added error handling for Web3 extensions -->
+    <script>
+        // Silently catch Web3 extension errors without breaking the page
+        if(typeof window.__stopEthereumErrors === 'undefined') {
+            window.__stopEthereumErrors = true;
+            const originalError = console.error;
+            console.error = function() {
+                if(arguments.length > 0 && typeof arguments[0] === 'string' && 
+                   arguments[0].includes('inpage.js')) return;
+                originalError.apply(console, arguments);
+            };
+        }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -405,6 +418,31 @@
             51%, 100% { opacity: 0; }
         }
 
+        /* Age progress bar */
+        .age-progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+            contain: strict;
+        }
+
+        .age-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #00AFFF 0%, #0080FF 100%);
+            width: 0%;
+            animation: progress-fill 2s ease-out forwards;
+            box-shadow: 0 0 10px rgba(0, 175, 255, 0.5);
+            transform: translateZ(0);
+            backface-visibility: hidden;
+        }
+
+        @keyframes progress-fill {
+            to { width: 100%; }
+        }
+
         /* Responsive adjustments */
         @media (max-width: 768px) {
             .cursor, .cursor-follower {
@@ -431,29 +469,74 @@
             perspective: 1000px;
         }
 
-        /* Age progress bar */
-        .age-progress-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            margin-top: 0.5rem;
+        /* Typewriter Effect */
+        .typewriter {
             overflow: hidden;
-            contain: strict;
+            white-space: nowrap;
+            animation: typing 3s steps(40, end);
         }
 
-        .age-progress {
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        /* Blinking Status */
+        .blink {
+            animation: blink-animation 1s infinite;
+        }
+
+        @keyframes blink-animation {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0.3; }
+        }
+
+        /* Glitch effect for main title */
+        h1[data-text] {
+            position: relative;
+        }
+
+        h1[data-text]::before,
+        h1[data-text]::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, #00AFFF 0%, #0080FF 100%);
-            width: 0%;
-            animation: progress-fill 2s ease-out forwards;
-            box-shadow: 0 0 10px rgba(0, 175, 255, 0.5);
-            transform: translateZ(0);
-            backface-visibility: hidden;
+            opacity: 0;
         }
 
-        @keyframes progress-fill {
-            to { width: 100%; }
+        h1[data-text]:hover::before {
+            animation: glitch-1 0.3s infinite;
+            color: #FF00FF;
+            z-index: -1;
+            opacity: 0.8;
+        }
+
+        h1[data-text]:hover::after {
+            animation: glitch-2 0.3s infinite;
+            color: #00FFFF;
+            z-index: -2;
+            opacity: 0.8;
+        }
+
+        @keyframes glitch-1 {
+            0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, -2px); }
+            20% { clip-path: inset(92% 0 1% 0); transform: translate(2px, 2px); }
+            40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 2px); }
+            100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
+        }
+
+        @keyframes glitch-2 {
+            0% { clip-path: inset(25% 0 58% 0); transform: translate(2px, 2px); }
+            20% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, -2px); }
+            40% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, 2px); }
+            80% { clip-path: inset(92% 0 1% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 2px); }
         }
     </style>
 </head>
@@ -532,79 +615,6 @@
         <p>© 2025 appuzlota // All systems operational.</p>
     </footer>
 
-    <!-- Additional Styles -->
-    <style>
-        /* Typewriter Effect */
-        .typewriter {
-            overflow: hidden;
-            white-space: nowrap;
-            animation: typing 3s steps(40, end);
-        }
-
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
-        }
-
-        /* Blinking Status */
-        .blink {
-            animation: blink-animation 1s infinite;
-        }
-
-        @keyframes blink-animation {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-
-        /* Glitch effect for main title */
-        h1[data-text] {
-            position: relative;
-        }
-
-        h1[data-text]::before,
-        h1[data-text]::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-        }
-
-        h1[data-text]:hover::before {
-            animation: glitch-1 0.3s infinite;
-            color: #FF00FF;
-            z-index: -1;
-            opacity: 0.8;
-        }
-
-        h1[data-text]:hover::after {
-            animation: glitch-2 0.3s infinite;
-            color: #00FFFF;
-            z-index: -2;
-            opacity: 0.8;
-        }
-
-        @keyframes glitch-1 {
-            0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, -2px); }
-            20% { clip-path: inset(92% 0 1% 0); transform: translate(2px, 2px); }
-            40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 2px); }
-            60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, -2px); }
-            80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 2px); }
-            100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
-        }
-
-        @keyframes glitch-2 {
-            0% { clip-path: inset(25% 0 58% 0); transform: translate(2px, 2px); }
-            20% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, -2px); }
-            40% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
-            60% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, 2px); }
-            80% { clip-path: inset(92% 0 1% 0); transform: translate(2px, -2px); }
-            100% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 2px); }
-        }
-    </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Performance optimization: Use RAF for animations
@@ -618,63 +628,71 @@
             
             // Hide loader after content loads
             window.addEventListener('load', () => {
-                setTimeout(() => {
-                    document.querySelector('.loader').classList.add('hidden');
-                }, 500);
+                const loader = document.querySelector('.loader');
+                if (loader) {
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                    }, 500);
+                }
             });
 
             // Optimized Custom Cursor
             const cursor = document.querySelector('.cursor');
             const cursorFollower = document.querySelector('.cursor-follower');
-            let mouseX = 0, mouseY = 0;
-            let cursorX = 0, cursorY = 0;
-            let followerX = 0, followerY = 0;
+            if (cursor && cursorFollower) {
+                let mouseX = 0, mouseY = 0;
+                let cursorX = 0, cursorY = 0;
+                let followerX = 0, followerY = 0;
 
-            // Throttled mouse move handler
-            let mouseMoveThrottle = false;
-            document.addEventListener('mousemove', (e) => {
-                if (!mouseMoveThrottle) {
-                    mouseX = e.clientX;
-                    mouseY = e.clientY;
-                    mouseMoveThrottle = true;
-                    setTimeout(() => { mouseMoveThrottle = false; }, 16); // ~60fps
+                // Throttled mouse move handler
+                let mouseMoveThrottle = false;
+                document.addEventListener('mousemove', (e) => {
+                    if (!mouseMoveThrottle) {
+                        mouseX = e.clientX;
+                        mouseY = e.clientY;
+                        mouseMoveThrottle = true;
+                        setTimeout(() => { mouseMoveThrottle = false; }, 16); // ~60fps
+                    }
+                });
+
+                function animateCursor() {
+                    const dx = mouseX - cursorX;
+                    const dy = mouseY - cursorY;
+                    cursorX += dx * 0.5;
+                    cursorY += dy * 0.5;
+                    cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0)`;
+
+                    const fdx = mouseX - followerX;
+                    const fdy = mouseY - followerY;
+                    followerX += fdx * 0.1;
+                    followerY += fdy * 0.1;
+                    cursorFollower.style.transform = `translate3d(${followerX - 20}px, ${followerY - 20}px, 0)`;
                 }
-            });
+                animations.add(animateCursor);
 
-            function animateCursor() {
-                const dx = mouseX - cursorX;
-                const dy = mouseY - cursorY;
-                cursorX += dx * 0.5;
-                cursorY += dy * 0.5;
-                cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0)`;
-
-                const fdx = mouseX - followerX;
-                const fdy = mouseY - followerY;
-                followerX += fdx * 0.1;
-                followerY += fdy * 0.1;
-                cursorFollower.style.transform = `translate3d(${followerX - 20}px, ${followerY - 20}px, 0)`;
+                // Cursor hover effects
+                const hoverElements = document.querySelectorAll('button, a, .skill-tag, .scramble-text');
+                hoverElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+                    el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+                });
             }
-            animations.add(animateCursor);
-
-            // Cursor hover effects
-            const hoverElements = document.querySelectorAll('button, a, .skill-tag, .scramble-text');
-            hoverElements.forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-            });
 
             // Optimized mouse gradient effect
             let gradientThrottle = false;
-            document.addEventListener('mousemove', (e) => {
-                if (!gradientThrottle) {
-                    const x = (e.clientX / window.innerWidth) * 100;
-                    const y = (e.clientY / window.innerHeight) * 100;
-                    document.querySelector('.noise-bg').style.setProperty('--mouse-x', x + '%');
-                    document.querySelector('.noise-bg').style.setProperty('--mouse-y', y + '%');
-                    gradientThrottle = true;
-                    setTimeout(() => { gradientThrottle = false; }, 100);
-                }
-            });
+            const noiseBg = document.querySelector('.noise-bg');
+            if (noiseBg) {
+                document.addEventListener('mousemove', (e) => {
+                    if (!gradientThrottle) {
+                        const x = (e.clientX / window.innerWidth) * 100;
+                        const y = (e.clientY / window.innerHeight) * 100;
+                        noiseBg.style.setProperty('--mouse-x', x + '%');
+                        noiseBg.style.setProperty('--mouse-y', y + '%');
+                        gradientThrottle = true;
+                        setTimeout(() => { gradientThrottle = false; }, 100);
+                    }
+                });
+            }
 
             // Optimized Particle System
             const particlesContainer = document.getElementById('particles-container');
@@ -682,7 +700,7 @@
             let activeParticles = 0;
             
             function createParticle(x, y) {
-                if (activeParticles >= maxParticles) return;
+                if (activeParticles >= maxParticles || !particlesContainer) return;
                 
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -771,14 +789,14 @@
                 // Update only every 10ms for smooth animation
                 if (timestamp - lastUpdateTime >= 10) {
                     const ageElement = document.getElementById('live-age');
+                    const progressBar = document.querySelector('.age-progress');
                     if (ageElement) {
                         const age = calculateAge();
                         ageElement.textContent = age.toFixed(9);
                         
                         // Update progress bar based on fraction of current year
-                        const yearProgress = (age % 1) * 100;
-                        const progressBar = document.querySelector('.age-progress');
                         if (progressBar) {
+                            const yearProgress = (age % 1) * 100;
                             progressBar.style.width = yearProgress + '%';
                         }
                     }
@@ -809,6 +827,7 @@
                 }
 
                 init() {
+                    if (!this.element) return;
                     const text = this.element.textContent;
                     this.element.innerHTML = '';
                     
@@ -981,8 +1000,8 @@
             /*
              * === Optimized 3D Crystal Animation ===
              */
-            const canvasContainer = document.querySelector('#three-canvas').parentElement;
             const canvas = document.getElementById('three-canvas');
+            const canvasContainer = canvas ? canvas.parentElement : null;
             if (canvas && canvasContainer) {
                 const scene = new THREE.Scene();
                 const camera = new THREE.PerspectiveCamera(75, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 1000);
@@ -1159,8 +1178,9 @@
                             entry.target.classList.add('is-visible');
                             
                             // Special handling for skills container
-                            if (entry.target.querySelector('.skills-container')) {
-                                entry.target.querySelector('.skills-container').classList.add('skills-visible');
+                            const skillsContainer = entry.target.querySelector('.skills-container');
+                            if (skillsContainer) {
+                                skillsContainer.classList.add('skills-visible');
                             }
                         });
                         
@@ -1179,65 +1199,67 @@
             const copyFeedback = document.getElementById('copy-feedback');
             const discordId = 'appuzlota';
 
-            discordButton.addEventListener('click', async (e) => {
-                // Create ripple effect
-                const ripple = document.createElement('span');
-                const rect = discordButton.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.width = ripple.style.height = size + 'px';
-                ripple.style.left = x + 'px';
-                ripple.style.top = y + 'px';
-                ripple.classList.add('ripple');
-                
-                discordButton.appendChild(ripple);
-                
-                setTimeout(() => ripple.remove(), 600);
-                
-                // Copy to clipboard
-                try {
-                    if (navigator.clipboard && window.isSecureContext) {
-                        await navigator.clipboard.writeText(discordId);
-                    } else {
-                        // Fallback for older browsers
-                        const textArea = document.createElement('textarea');
-                        textArea.value = discordId;
-                        textArea.style.position = 'fixed';
-                        textArea.style.left = '-999999px';
-                        document.body.appendChild(textArea);
-                        textArea.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(textArea);
+            if (discordButton && copyFeedback) {
+                discordButton.addEventListener('click', async (e) => {
+                    // Create ripple effect
+                    const ripple = document.createElement('span');
+                    const rect = discordButton.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    const x = e.clientX - rect.left - size / 2;
+                    const y = e.clientY - rect.top - size / 2;
+                    
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = x + 'px';
+                    ripple.style.top = y + 'px';
+                    ripple.classList.add('ripple');
+                    
+                    discordButton.appendChild(ripple);
+                    
+                    setTimeout(() => ripple.remove(), 600);
+                    
+                    // Copy to clipboard
+                    try {
+                        if (navigator.clipboard && window.isSecureContext) {
+                            await navigator.clipboard.writeText(discordId);
+                        } else {
+                            // Fallback for older browsers
+                            const textArea = document.createElement('textarea');
+                            textArea.value = discordId;
+                            textArea.style.position = 'fixed';
+                            textArea.style.left = '-999999px';
+                            document.body.appendChild(textArea);
+                            textArea.select();
+                            document.execCommand('copy');
+                            document.body.removeChild(textArea);
+                        }
+                        
+                        // Show feedback
+                        copyFeedback.style.opacity = '1';
+                        copyFeedback.style.transform = 'translate(-50%, -10px)';
+                        
+                        // Add success animation to button
+                        discordButton.style.animation = 'success-pulse 0.5s ease';
+                        
+                        setTimeout(() => {
+                            copyFeedback.style.opacity = '0';
+                            copyFeedback.style.transform = 'translate(-50%, 0)';
+                            discordButton.style.animation = '';
+                        }, 2000);
+                        
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        copyFeedback.textContent = 'FAILED';
+                        copyFeedback.style.backgroundColor = '#FF0000';
+                        copyFeedback.style.opacity = '1';
+                        
+                        setTimeout(() => {
+                            copyFeedback.style.opacity = '0';
+                            copyFeedback.textContent = 'COPIED';
+                            copyFeedback.style.backgroundColor = '';
+                        }, 2000);
                     }
-                    
-                    // Show feedback
-                    copyFeedback.style.opacity = '1';
-                    copyFeedback.style.transform = 'translate(-50%, -10px)';
-                    
-                    // Add success animation to button
-                    discordButton.style.animation = 'success-pulse 0.5s ease';
-                    
-                    setTimeout(() => {
-                        copyFeedback.style.opacity = '0';
-                        copyFeedback.style.transform = 'translate(-50%, 0)';
-                        discordButton.style.animation = '';
-                    }, 2000);
-                    
-                } catch (err) {
-                    console.error('Failed to copy: ', err);
-                    copyFeedback.textContent = 'FAILED';
-                    copyFeedback.style.backgroundColor = '#FF0000';
-                    copyFeedback.style.opacity = '1';
-                    
-                    setTimeout(() => {
-                        copyFeedback.style.opacity = '0';
-                        copyFeedback.textContent = 'COPIED';
-                        copyFeedback.style.backgroundColor = '';
-                    }, 2000);
-                }
-            });
+                });
+            }
 
             /*
              * === Optimized Magnetic Hover Effect for Skills ===
@@ -1381,7 +1403,9 @@
                 if (prefersReducedMotion.matches) {
                     // Disable complex animations
                     document.querySelectorAll('.particle').forEach(p => p.remove());
-                    document.querySelector('.noise-bg')?.classList.add('reduced-motion');
+                    if (noiseBg) {
+                        noiseBg.classList.add('reduced-motion');
+                    }
                     // Stop RAF animations
                     if (rafId) {
                         cancelAnimationFrame(rafId);
@@ -1476,254 +1500,8 @@
             .touch-device .cursor-follower {
                 display: none;
             }
-
-            /* Performance optimizations */
-            .bento-item,
-            .skill-tag {
-                will-change: transform;
-                transform: translateZ(0);
-                backface-visibility: hidden;
-            }
-
-            /* Smooth scrolling */
-            html {
-                scroll-behavior: smooth;
-            }
-
-            /* Optimize animations for performance */
-            @media (prefers-reduced-motion: no-preference) {
-                .particle,
-                .cursor,
-                .cursor-follower {
-                    will-change: transform, opacity;
-                }
-            }
-
-            /* Print styles */
-            @media print {
-                .noise-bg,
-                .particle,
-                .cursor,
-                .cursor-follower,
-                #three-canvas,
-                .loader {
-                    display: none !important;
-                }
-                
-                body {
-                    background: white;
-                    color: black;
-                    cursor: auto;
-                }
-                
-                .bento-item {
-                    border: 1px solid black !important;
-                    page-break-inside: avoid;
-                }
-                
-                .accent-color {
-                    color: black !important;
-                }
-                
-                * {
-                    animation: none !important;
-                    transition: none !important;
-                }
-            }
-
-            /* Low-end device optimizations */
-            @media (max-width: 768px), (max-height: 600px) {
-                .noise-bg::before {
-                    animation-duration: 16s;
-                }
-                
-                .particle {
-                    display: none;
-                }
-                
-                #three-canvas {
-                    display: none;
-                }
-            }
-
-            /* Smoother scroll animations */
-            .scroll-animate {
-                transform: translate3d(0, 30px, 0) rotateX(-10deg);
-                backface-visibility: hidden;
-                -webkit-font-smoothing: antialiased;
-            }
-
-            .scroll-animate.is-visible {
-                transform: translate3d(0, 0, 0) rotateX(0);
-            }
-
-            /* Optimize bento item transitions */
-            .bento-item {
-                transform: translateZ(0);
-                backface-visibility: hidden;
-                -webkit-font-smoothing: antialiased;
-            }
-
-            /* Force hardware acceleration */
-            .scramble-text .char {
-                transform: translateZ(0);
-                backface-visibility: hidden;
-                perspective: 1000px;
-                -webkit-font-smoothing: subpixel-antialiased;
-            }
-
-            /* Optimize skill tag hover */
-            .skill-tag {
-                transform: translateZ(0);
-                transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                            color 0.3s ease,
-                            border-color 0.3s ease,
-                            box-shadow 0.3s ease;
-            }
-
-            /* Reduce paint areas */
-            .bento-item,
-            .skill-tag,
-            .brutalist-btn {
-                contain: layout style paint;
-            }
-
-            /* Optimize cursor animations */
-            .cursor,
-            .cursor-follower {
-                will-change: transform;
-                pointer-events: none;
-                contain: layout style paint;
-            }
-
-            /* Optimize particle animations */
-            @keyframes float-up {
-                0% {
-                    opacity: 0;
-                    transform: translate3d(0, 0, 0) scale(0);
-                }
-                10% {
-                    opacity: 1;
-                    transform: translate3d(0, -20px, 0) scale(1);
-                }
-                100% {
-                    opacity: 0;
-                    transform: translate3d(0, -200px, 0) scale(0.5);
-                }
-            }
-
-            /* Optimize noise animation */
-            .noise-bg::before {
-                will-change: transform;
-                transform: translateZ(0);
-            }
-
-            /* Reduce repaints for age counter */
-            .age-value {
-                contain: layout style;
-                will-change: contents;
-            }
-
-            /* Optimize progress bar */
-            .age-progress {
-                will-change: width;
-                transform: translateZ(0);
-            }
-
-            /* Batch similar transitions */
-            * {
-                transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            }
-
-            /* Optimize text rendering */
-            body {
-                text-rendering: optimizeLegibility;
-                -webkit-font-smoothing: antialiased;
-                -moz-osx-font-smoothing: grayscale;
-            }
-
-            /* Reduce composite layers */
-            .bento-item::before {
-                will-change: opacity;
-                transform: translateZ(0);
-            }
-
-            /* Optimize button hover state */
-            .brutalist-btn::before {
-                will-change: width, height;
-                transform: translateZ(0);
-            }
-
-            /* Reduce layout thrashing */
-            .scramble-text {
-                contain: layout style;
-                isolation: isolate;
-            }
-
-            /* Optimize glitch animation */
-            @keyframes glitch {
-                0%, 100% { transform: translate3d(0, 0, 0); }
-                25% { transform: translate3d(-1px, 1px, 0); }
-                50% { transform: translate3d(1px, -1px, 0); }
-                75% { transform: translate3d(-0.5px, 0.5px, 0); }
-            }
-
-            /* Reduce animation complexity on hover */
-            @media (hover: hover) {
-                .bento-item {
-                    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-                                border-color 0.3s ease;
-                }
-            }
-
-            /* Optimize mobile performance */
-            @media (max-width: 768px) {
-                .scramble-text .char {
-                    animation: none;
-                }
-                
-                .bento-item:hover {
-                    transform: none;
-                }
-                
-                .skill-tag:hover {
-                    transform: translateY(-2px);
-                }
-            }
-
-            /* Reduce GPU memory usage */
-            .particle {
-                will-change: auto;
-            }
-
-            .particle.active {
-                will-change: transform, opacity;
-            }
-
-            /* Optimize font loading */
-            .font-display-swap {
-                font-display: swap;
-            }
-
-            /* Reduce reflows */
-            .age-counter {
-                min-height: 80px;
-            }
-
-            /* Optimize backdrop filter */
-            @supports (backdrop-filter: blur(10px)) {
-                .bento-item {
-                    backdrop-filter: blur(10px);
-                }
-            }
-
-            @supports not (backdrop-filter: blur(10px)) {
-                .bento-item {
-                    background-color: rgba(0, 0, 0, 0.8);
-                }
-            }
         `;
         document.head.appendChild(style);
     </script>
-</body> 
+</body>
 </html>
