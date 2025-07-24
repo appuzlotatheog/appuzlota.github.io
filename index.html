@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -11,10 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
     <style>
-        /* * ===================================================================
-         * Base & Theming: Brutalism meets Y2K (Azure Blue Theme)
-         * ===================================================================
-         */
+        /* === Base & Theming: Brutalism meets Y2K (Azure Blue Theme) === */
         body {
             font-family: 'Space Mono', monospace;
             background-color: #0A0A0A;
@@ -34,6 +30,7 @@
             z-index: 9999;
             transform: translate(-50%, -50%);
             will-change: transform;
+            contain: layout style paint;
         }
 
         .cursor-follower {
@@ -46,6 +43,7 @@
             z-index: 9998;
             transform: translate(-50%, -50%);
             will-change: transform;
+            contain: layout style paint;
         }
 
         .cursor.hover {
@@ -66,6 +64,7 @@
             z-index: -1;
             overflow: hidden;
             background: #0A0A0A;
+            contain: strict;
         }
 
         .noise-bg::before {
@@ -77,6 +76,8 @@
             opacity: 0.04;
             animation: noise 8s steps(10) infinite;
             will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         .noise-bg::after {
@@ -89,19 +90,20 @@
             background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 175, 255, 0.1) 0%, transparent 50%);
             pointer-events: none;
             will-change: background;
+            transform: translateZ(0);
         }
 
         @keyframes noise {
-            0%, 100% { transform: translate(0, 0); } 
-            10% { transform: translate(-5%, -10%); } 
-            20% { transform: translate(-15%, 5%); } 
-            30% { transform: translate(7%, -25%); } 
-            40% { transform: translate(-5%, 25%); } 
-            50% { transform: translate(-15%, 10%); } 
-            60% { transform: translate(15%, 0%); } 
-            70% { transform: translate(0%, 15%); } 
-            80% { transform: translate(3%, 35%); } 
-            90% { transform: translate(-10%, 10%); }
+            0%, 100% { transform: translate3d(0, 0, 0); } 
+            10% { transform: translate3d(-5%, -10%, 0); } 
+            20% { transform: translate3d(-15%, 5%, 0); } 
+            30% { transform: translate3d(7%, -25%, 0); } 
+            40% { transform: translate3d(-5%, 25%, 0); } 
+            50% { transform: translate3d(-15%, 10%, 0); } 
+            60% { transform: translate3d(15%, 0%, 0); } 
+            70% { transform: translate3d(0%, 15%, 0); } 
+            80% { transform: translate3d(3%, 35%, 0); } 
+            90% { transform: translate3d(-10%, 10%, 0); }
         }
 
         /* Floating Particles */
@@ -111,6 +113,7 @@
             opacity: 0;
             z-index: -1;
             will-change: transform, opacity;
+            contain: layout style paint;
         }
 
         .particle.active {
@@ -120,22 +123,19 @@
         @keyframes float-up {
             0% {
                 opacity: 0;
-                transform: translateY(0) scale(0);
+                transform: translate3d(0, 0, 0) scale(0);
             }
             10% {
                 opacity: 1;
-                transform: translateY(-20px) scale(1);
+                transform: translate3d(0, -20px, 0) scale(1);
             }
             100% {
                 opacity: 0;
-                transform: translateY(-200px) scale(0.5);
+                transform: translate3d(0, -200px, 0) scale(0.5);
             }
         }
 
-        /* * ===================================================================
-         * Typography & UI Elements
-         * ===================================================================
-         */
+        /* === Typography & UI Elements === */
         h1, h2, h3 { font-family: 'VT323', monospace; }
         
         .y2k-glow { 
@@ -163,6 +163,8 @@
             position: relative;
             overflow: hidden;
             cursor: none;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         .brutalist-btn::before {
@@ -184,12 +186,12 @@
         }
 
         .brutalist-btn:hover {
-            transform: translate(2px, 2px);
+            transform: translate3d(2px, 2px, 0);
             box-shadow: 2px 2px 0px #E0E0E0;
         }
 
         .brutalist-btn:active {
-            transform: translate(4px, 4px);
+            transform: translate3d(4px, 4px, 0);
             box-shadow: 0px 0px 0px #E0E0E0;
         }
 
@@ -199,6 +201,9 @@
             transform-style: preserve-3d;
             transition: transform 0.3s ease;
             will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: layout style;
         }
 
         .bento-item::before {
@@ -220,7 +225,7 @@
         }
 
         .bento-item:hover {
-            transform: translateZ(10px);
+            transform: translate3d(0, 0, 10px);
         }
 
         /* Skill Tags with Magnetic Effect */
@@ -232,6 +237,9 @@
             overflow: hidden;
             cursor: none;
             will-change: transform;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: layout style paint;
         }
 
         .skill-tag::before {
@@ -254,7 +262,7 @@
         .skill-tag:hover {
             color: #0A0A0A;
             border-color: #00AFFF;
-            transform: translateY(-2px);
+            transform: translate3d(0, -2px, 0);
             box-shadow: 0 5px 15px rgba(0, 175, 255, 0.3);
         }
 
@@ -263,34 +271,33 @@
             z-index: 1;
         }
 
-        /* * ===================================================================
-         * Advanced Animations - Optimized for smoother performance
-         * ===================================================================
-         */
+        /* === Advanced Animations - Optimized for smoother performance === */
         .scroll-animate {
             opacity: 0;
-            transform: translateY(30px) rotateX(-10deg);
+            transform: translate3d(0, 30px, 0) rotateX(-10deg);
             transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
                         transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             transform-origin: center center;
             backface-visibility: hidden;
             perspective: 1000px;
+            will-change: opacity, transform;
+            contain: layout style;
         }
 
         .scroll-animate.is-visible {
             opacity: 1;
-            transform: translateY(0) rotateX(0);
+            transform: translate3d(0, 0, 0) rotateX(0);
         }
 
         /* Stagger animation for skill tags */
         .skill-tag {
             opacity: 0;
-            transform: translateY(20px);
+            transform: translate3d(0, 20px, 0);
         }
 
         .skills-visible .skill-tag {
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
             transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
@@ -309,19 +316,20 @@
             z-index: 1;
         }
 
-        /* * ===================================================================
-         * Enhanced Scramble Text Animation
-         * ===================================================================
-         */
+        /* === Enhanced Scramble Text Animation === */
         .scramble-text {
             cursor: none;
+            contain: layout style;
         }
 
         .scramble-text .char {
             display: inline-block;
-            will-change: transform;
+            will-change: transform, contents;
             transition: all 0.3s ease;
             white-space: pre;
+            transform: translateZ(0);
+            backface-visibility: hidden;
+            contain: layout style paint;
         }
 
         .scramble-text .char.scrambling {
@@ -331,23 +339,21 @@
         }
 
         @keyframes glitch {
-            0% { transform: translateX(0) translateY(0) rotateZ(0deg); }
-            25% { transform: translateX(-1px) translateY(1px) rotateZ(-1deg); }
-            50% { transform: translateX(1px) translateY(-1px) rotateZ(1deg); }
-            75% { transform: translateX(-0.5px) translateY(0.5px) rotateZ(-0.5deg); }
-            100% { transform: translateX(0) translateY(0) rotateZ(0deg); }
+            0% { transform: translate3d(0, 0, 0) rotateZ(0deg); }
+            25% { transform: translate3d(-1px, 1px, 0) rotateZ(-1deg); }
+            50% { transform: translate3d(1px, -1px, 0) rotateZ(1deg); }
+            75% { transform: translate3d(-0.5px, 0.5px, 0) rotateZ(-0.5deg); }
+            100% { transform: translate3d(0, 0, 0) rotateZ(0deg); }
         }
 
-        /* * ===================================================================
-         * Age Counter with Glow Effect
-         * ===================================================================
-         */
+        /* === Age Counter with Glow Effect === */
         .age-counter {
             font-family: 'VT323', monospace;
             font-size: 1.25rem;
             color: #00AFFF;
             margin-top: 1.5rem;
             position: relative;
+            contain: layout style;
         }
 
         .age-value {
@@ -357,11 +363,13 @@
             animation: counter-pulse 1s ease-in-out infinite;
             font-variant-numeric: tabular-nums;
             letter-spacing: 0.02em;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
-        @keyframes counter-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+        @keyframes counter-pulse { 
+            0%, 100% { transform: scale3d(1, 1, 1); } 
+            50% { transform: scale3d(1.02, 1.02, 1); }
         }
 
         /* Loading Animation */
@@ -377,6 +385,7 @@
             align-items: center;
             justify-content: center;
             transition: opacity 0.5s ease;
+            contain: strict;
         }
 
         .loader.hidden {
@@ -410,7 +419,8 @@
                 cursor: pointer;
             }
         }
-                        /* GPU Acceleration */
+
+        /* GPU Acceleration */
         .particle,
         .bento-item,
         .skill-tag,
@@ -429,6 +439,7 @@
             border-radius: 2px;
             margin-top: 0.5rem;
             overflow: hidden;
+            contain: strict;
         }
 
         .age-progress {
@@ -437,6 +448,8 @@
             width: 0%;
             animation: progress-fill 2s ease-out forwards;
             box-shadow: 0 0 10px rgba(0, 175, 255, 0.5);
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         @keyframes progress-fill {
@@ -448,21 +461,20 @@
     <!-- Custom Cursor -->
     <div class="cursor"></div>
     <div class="cursor-follower"></div>
-    
+
     <!-- Loading Screen -->
     <div class="loader">
         <div class="loader-text">INITIALIZING...</div>
     </div>
-    
+
     <!-- Background -->
     <div class="noise-bg"></div>
-    
+
     <!-- Particle Container -->
     <div id="particles-container"></div>
 
     <main class="max-w-6xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6">
-            
             <!-- Hero Section (3D Element) -->
             <div class="bento-item min-h-[350px] md:min-h-[400px] md:col-span-2 lg:col-span-4 lg:row-span-2 flex flex-col justify-between scroll-animate">
                 <div class="relative z-10 p-4 md:p-6">
@@ -513,12 +525,11 @@
                     <span id="copy-feedback" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300 whitespace-nowrap">COPIED</span>
                 </div>
             </div>
-
         </div>
     </main>
-    
+
     <footer class="text-center text-gray-600 font-mono text-xs md:text-sm py-8 mt-6">
-        <p>&copy; 2025 appuzlota // All systems operational.</p>
+        <p>© 2025 appuzlota // All systems operational.</p>
     </footer>
 
     <!-- Additional Styles -->
@@ -596,7 +607,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            
             // Performance optimization: Use RAF for animations
             let rafId = null;
             const animations = new Set();
@@ -636,13 +646,13 @@
                 const dy = mouseY - cursorY;
                 cursorX += dx * 0.5;
                 cursorY += dy * 0.5;
-                cursor.style.transform = `translate(${cursorX - 10}px, ${cursorY - 10}px)`;
+                cursor.style.transform = `translate3d(${cursorX - 10}px, ${cursorY - 10}px, 0)`;
 
                 const fdx = mouseX - followerX;
                 const fdy = mouseY - followerY;
                 followerX += fdx * 0.1;
                 followerY += fdy * 0.1;
-                cursorFollower.style.transform = `translate(${followerX - 20}px, ${followerY - 20}px)`;
+                cursorFollower.style.transform = `translate3d(${followerX - 20}px, ${followerY - 20}px, 0)`;
             }
             animations.add(animateCursor);
 
@@ -685,7 +695,6 @@
                 particle.style.background = '#00AFFF';
                 particle.style.borderRadius = '50%';
                 particle.style.boxShadow = `0 0 ${size * 2}px rgba(0, 175, 255, 0.5)`;
-                
                 particlesContainer.appendChild(particle);
                 activeParticles++;
                 
@@ -719,7 +728,8 @@
                 
                 // Optimized magnetic effect
                 let magneticThrottle = false;
-                item.addEventListener('mousemove', (e) => {                    if (!magneticThrottle) {
+                item.addEventListener('mousemove', (e) => {
+                    if (!magneticThrottle) {
                         const rect = item.getBoundingClientRect();
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
@@ -730,7 +740,7 @@
                         const deltaX = (x - centerX) / centerX;
                         const deltaY = (y - centerY) / centerY;
                         
-                        item.style.transform = `perspective(1000px) rotateY(${deltaX * 5}deg) rotateX(${-deltaY * 5}deg) translateZ(10px)`;
+                        item.style.transform = `perspective(1000px) rotateY(${deltaX * 5}deg) rotateX(${-deltaY * 5}deg) translate3d(0, 0, 10px)`;
                         item.style.borderColor = '#00AFFF';
                         
                         magneticThrottle = true;
@@ -745,9 +755,7 @@
             });
 
             /*
-             * ===================================================================
-             * Live Age Counter with 9 Decimal Places
-             * ===================================================================
+             * === Live Age Counter with 9 Decimal Places ===
              */
             const birthDate = new Date('2010-01-29T19:10:00'); // 29-01-2010 07:10PM
             
@@ -782,9 +790,7 @@
             animations.add(updateAge);
 
             /*
-             * ===================================================================
-             * Optimized Scramble Text Animation
-             * ===================================================================
+             * === Optimized Scramble Text Animation ===
              */
             class ScrambleText {
                 constructor(element) {
@@ -797,6 +803,8 @@
                     this.chars = [];
                     this.isAnimating = false;
                     this.animationFrame = null;
+                    this.lastFrameTime = 0;
+                    this.frameInterval = 1000 / 30; // 30fps for scramble animation
                     this.init();
                 }
 
@@ -804,12 +812,15 @@
                     const text = this.element.textContent;
                     this.element.innerHTML = '';
                     
+                    // Pre-create character spans
+                    const fragment = document.createDocumentFragment();
+                    
                     for (let i = 0; i < text.length; i++) {
                         const span = document.createElement('span');
                         span.className = 'char';
                         span.textContent = text[i];
                         span.dataset.content = text[i];
-                        this.element.appendChild(span);
+                        fragment.appendChild(span);
                         this.chars.push({
                             element: span,
                             original: text[i],
@@ -818,19 +829,37 @@
                             progress: 0,
                             targetProgress: 0,
                             lastScrambleTime: 0,
-                            scrambleCount: 0
+                            scrambleCount: 0,
+                            currentChar: text[i]
                         });
                     }
+                    
+                    this.element.appendChild(fragment);
 
-                    this.element.addEventListener('mouseenter', this.handleEnter.bind(this));
-                    this.element.addEventListener('mousemove', this.handleMove.bind(this));
+                    // Debounced event handlers
+                    let enterTimeout;
+                    this.element.addEventListener('mouseenter', () => {
+                        clearTimeout(enterTimeout);
+                        enterTimeout = setTimeout(() => this.handleEnter(), 0);
+                    });
+                    
+                    let moveThrottle = false;
+                    this.element.addEventListener('mousemove', (e) => {
+                        if (!moveThrottle) {
+                            this.handleMove(e);
+                            moveThrottle = true;
+                            setTimeout(() => { moveThrottle = false; }, 50);
+                        }
+                    });
+                    
                     this.element.addEventListener('mouseleave', this.handleLeave.bind(this));
                 }
 
                 handleEnter() {
                     if (!this.isAnimating) {
                         this.isAnimating = true;
-                        this.animate();
+                        this.lastFrameTime = performance.now();
+                        this.animate(this.lastFrameTime);
                     }
                 }
 
@@ -839,12 +868,20 @@
                     const mouseX = e.clientX;
                     const mouseY = e.clientY;
 
-                    this.chars.forEach((char, index) => {
+                    // Batch DOM reads
+                    const charData = this.chars.map((char, index) => {
                         const charRect = char.element.getBoundingClientRect();
-                        const charCenterX = charRect.left + charRect.width / 2;
-                        const charCenterY = charRect.top + charRect.height / 2;
-                        const dx = mouseX - charCenterX;
-                        const dy = mouseY - charCenterY;
+                        return {
+                            char,
+                            centerX: charRect.left + charRect.width / 2,
+                            centerY: charRect.top + charRect.height / 2
+                        };
+                    });
+
+                    // Batch calculations
+                    charData.forEach(({ char, centerX, centerY }) => {
+                        const dx = mouseX - centerX;
+                        const dy = mouseY - centerY;
                         const distance = Math.sqrt(dx * dx + dy * dy);
 
                         if (distance < this.radius) {
@@ -871,10 +908,20 @@
                     }, 500);
                 }
 
-                animate() {
+                animate(currentTime) {
                     if (!this.isAnimating) return;
                     
-                    const currentTime = Date.now();
+                    // Frame rate limiting
+                    const deltaTime = currentTime - this.lastFrameTime;
+                    if (deltaTime < this.frameInterval) {
+                        this.animationFrame = requestAnimationFrame(this.animate.bind(this));
+                        return;
+                    }
+                    
+                    this.lastFrameTime = currentTime - (deltaTime % this.frameInterval);
+                    
+                    // Batch DOM updates
+                    const updates = [];
                     
                     this.chars.forEach(char => {
                         const diff = char.targetProgress - char.progress;
@@ -883,16 +930,22 @@
                         if (char.progress > 0.01 && !char.isSpace) {
                             if (!char.isAnimating) {
                                 char.isAnimating = true;
-                                char.element.classList.add('scrambling');
+                                updates.push(() => char.element.classList.add('scrambling'));
                             }
                             
                             if (currentTime - char.lastScrambleTime > 50) {
                                 if (Math.random() < char.progress * this.speed) {
                                     const randomChar = this.scrambleChars[Math.floor(Math.random() * this.scrambleChars.length)];
-                                    char.element.textContent = randomChar;
+                                    if (char.currentChar !== randomChar) {
+                                        char.currentChar = randomChar;
+                                        updates.push(() => char.element.textContent = randomChar);
+                                    }
                                     char.scrambleCount++;
                                 } else if (Math.random() < 0.3 || char.scrambleCount > 10) {
-                                    char.element.textContent = char.original;
+                                    if (char.currentChar !== char.original) {
+                                        char.currentChar = char.original;
+                                        updates.push(() => char.element.textContent = char.original);
+                                    }
                                     char.scrambleCount = 0;
                                 }
                                 char.lastScrambleTime = currentTime;
@@ -900,11 +953,21 @@
                         } else {
                             if (char.isAnimating) {
                                 char.isAnimating = false;
-                                char.element.classList.remove('scrambling');
+                                updates.push(() => char.element.classList.remove('scrambling'));
                             }
-                            char.element.textContent = char.original;
+                            if (char.currentChar !== char.original) {
+                                char.currentChar = char.original;
+                                updates.push(() => char.element.textContent = char.original);
+                            }
                         }
                     });
+
+                    // Apply all DOM updates at once
+                    if (updates.length > 0) {
+                        requestAnimationFrame(() => {
+                            updates.forEach(update => update());
+                        });
+                    }
 
                     this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 }
@@ -916,9 +979,7 @@
             });
 
             /*
-             * ===================================================================
-             * Optimized 3D Crystal Animation
-             * ===================================================================
+             * === Optimized 3D Crystal Animation ===
              */
             const canvasContainer = document.querySelector('#three-canvas').parentElement;
             const canvas = document.getElementById('three-canvas');
@@ -1083,9 +1144,7 @@
             }
 
             /*
-             * ===================================================================
-             * Optimized Scroll Animations with Smoother Transitions
-             * ===================================================================
+             * === Optimized Scroll Animations with Smoother Transitions ===
              */
             const observerOptions = {
                 threshold: 0.1,
@@ -1114,11 +1173,9 @@
             document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
 
             /*
-             * ===================================================================
-             * Discord Button with Enhanced Feedback
-             * ===================================================================
+             * === Discord Button with Enhanced Feedback ===
              */
-                        const discordButton = document.getElementById('discord-button');
+            const discordButton = document.getElementById('discord-button');
             const copyFeedback = document.getElementById('copy-feedback');
             const discordId = 'appuzlota';
 
@@ -1183,9 +1240,7 @@
             });
 
             /*
-             * ===================================================================
-             * Optimized Magnetic Hover Effect for Skills
-             * ===================================================================
+             * === Optimized Magnetic Hover Effect for Skills ===
              */
             const skillTags = document.querySelectorAll('.skill-tag');
             
@@ -1203,7 +1258,7 @@
                         const deltaX = (x - centerX) / centerX;
                         const deltaY = (y - centerY) / centerY;
                         
-                        tag.style.transform = `translate(${deltaX * 3}px, ${deltaY * 3}px) translateY(-2px)`;
+                        tag.style.transform = `translate3d(${deltaX * 3}px, ${deltaY * 3}px, 0) translateY(-2px)`;
                         
                         magneticThrottle = true;
                         setTimeout(() => { magneticThrottle = false; }, 50);
@@ -1216,9 +1271,7 @@
             });
 
             /*
-             * ===================================================================
-             * Performance Optimizations
-             * ===================================================================
+             * === Performance Optimizations ===
              */
             // Start RAF loop
             if (animations.size > 0) {
@@ -1244,9 +1297,7 @@
             });
 
             /*
-             * ===================================================================
-             * Easter Egg: Konami Code
-             * ===================================================================
+             * === Easter Egg: Konami Code ===
              */
             const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
             let konamiIndex = 0;
@@ -1300,9 +1351,7 @@
             }
 
             /*
-             * ===================================================================
-             * Touch Support for Mobile
-             * ===================================================================
+             * === Touch Support for Mobile ===
              */
             // Add touch support for interactive elements
             if ('ontouchstart' in window) {
@@ -1323,9 +1372,7 @@
             }
 
             /*
-             * ===================================================================
-             * Accessibility Enhancements
-             * ===================================================================
+             * === Accessibility Enhancements ===
              */
             // Respect prefers-reduced-motion
             const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -1364,7 +1411,6 @@
                 }
                 animations.clear();
             });
-
         });
 
         // Additional CSS for new features
@@ -1412,10 +1458,7 @@
             }
 
             /* Reduced Motion Support */
-            .reduced-motion::before {
-                animation: none !important;
-            }
-
+            .reduced-motion::before { animation: none !important; }
             .reduced-motion * {
                 animation-duration: 0.01ms !important;
                 animation-iteration-count: 1 !important;
@@ -1438,6 +1481,8 @@
             .bento-item,
             .skill-tag {
                 will-change: transform;
+                transform: translateZ(0);
+                backface-visibility: hidden;
             }
 
             /* Smooth scrolling */
@@ -1503,13 +1548,13 @@
 
             /* Smoother scroll animations */
             .scroll-animate {
-                transform: translateY(30px) rotateX(-10deg) translateZ(0);
+                transform: translate3d(0, 30px, 0) rotateX(-10deg);
                 backface-visibility: hidden;
                 -webkit-font-smoothing: antialiased;
             }
 
             .scroll-animate.is-visible {
-                transform: translateY(0) rotateX(0) translateZ(0);
+                transform: translate3d(0, 0, 0) rotateX(0);
             }
 
             /* Optimize bento item transitions */
@@ -1518,9 +1563,167 @@
                 backface-visibility: hidden;
                 -webkit-font-smoothing: antialiased;
             }
+
+            /* Force hardware acceleration */
+            .scramble-text .char {
+                transform: translateZ(0);
+                backface-visibility: hidden;
+                perspective: 1000px;
+                -webkit-font-smoothing: subpixel-antialiased;
+            }
+
+            /* Optimize skill tag hover */
+            .skill-tag {
+                transform: translateZ(0);
+                transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                            color 0.3s ease,
+                            border-color 0.3s ease,
+                            box-shadow 0.3s ease;
+            }
+
+            /* Reduce paint areas */
+            .bento-item,
+            .skill-tag,
+            .brutalist-btn {
+                contain: layout style paint;
+            }
+
+            /* Optimize cursor animations */
+            .cursor,
+            .cursor-follower {
+                will-change: transform;
+                pointer-events: none;
+                contain: layout style paint;
+            }
+
+            /* Optimize particle animations */
+            @keyframes float-up {
+                0% {
+                    opacity: 0;
+                    transform: translate3d(0, 0, 0) scale(0);
+                }
+                10% {
+                    opacity: 1;
+                    transform: translate3d(0, -20px, 0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate3d(0, -200px, 0) scale(0.5);
+                }
+            }
+
+            /* Optimize noise animation */
+            .noise-bg::before {
+                will-change: transform;
+                transform: translateZ(0);
+            }
+
+            /* Reduce repaints for age counter */
+            .age-value {
+                contain: layout style;
+                will-change: contents;
+            }
+
+            /* Optimize progress bar */
+            .age-progress {
+                will-change: width;
+                transform: translateZ(0);
+            }
+
+            /* Batch similar transitions */
+            * {
+                transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            }
+
+            /* Optimize text rendering */
+            body {
+                text-rendering: optimizeLegibility;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+
+            /* Reduce composite layers */
+            .bento-item::before {
+                will-change: opacity;
+                transform: translateZ(0);
+            }
+
+            /* Optimize button hover state */
+            .brutalist-btn::before {
+                will-change: width, height;
+                transform: translateZ(0);
+            }
+
+            /* Reduce layout thrashing */
+            .scramble-text {
+                contain: layout style;
+                isolation: isolate;
+            }
+
+            /* Optimize glitch animation */
+            @keyframes glitch {
+                0%, 100% { transform: translate3d(0, 0, 0); }
+                25% { transform: translate3d(-1px, 1px, 0); }
+                50% { transform: translate3d(1px, -1px, 0); }
+                75% { transform: translate3d(-0.5px, 0.5px, 0); }
+            }
+
+            /* Reduce animation complexity on hover */
+            @media (hover: hover) {
+                .bento-item {
+                    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                                border-color 0.3s ease;
+                }
+            }
+
+            /* Optimize mobile performance */
+            @media (max-width: 768px) {
+                .scramble-text .char {
+                    animation: none;
+                }
+                
+                .bento-item:hover {
+                    transform: none;
+                }
+                
+                .skill-tag:hover {
+                    transform: translateY(-2px);
+                }
+            }
+
+            /* Reduce GPU memory usage */
+            .particle {
+                will-change: auto;
+            }
+
+            .particle.active {
+                will-change: transform, opacity;
+            }
+
+            /* Optimize font loading */
+            .font-display-swap {
+                font-display: swap;
+            }
+
+            /* Reduce reflows */
+            .age-counter {
+                min-height: 80px;
+            }
+
+            /* Optimize backdrop filter */
+            @supports (backdrop-filter: blur(10px)) {
+                .bento-item {
+                    backdrop-filter: blur(10px);
+                }
+            }
+
+            @supports not (backdrop-filter: blur(10px)) {
+                .bento-item {
+                    background-color: rgba(0, 0, 0, 0.8);
+                }
+            }
         `;
         document.head.appendChild(style);
     </script>
-</body>
+</body> 
 </html>
-                    
