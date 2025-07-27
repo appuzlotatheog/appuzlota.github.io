@@ -178,6 +178,8 @@
             cursor: none;
             transform: translateZ(0);
             backface-visibility: hidden;
+            display: inline-block;
+            text-decoration: none;
         }
 
         .brutalist-btn::before {
@@ -600,12 +602,19 @@
             <!-- Contact -->
             <div class="bento-item min-h-[200px] md:col-span-1 lg:col-span-3 flex flex-col items-center justify-center text-center scroll-animate" style="transition-delay: 300ms;">
                 <h2 class="text-3xl md:text-4xl accent-color mb-4">CONTACT.CMD</h2>
-                <p class="mb-6 text-sm md:text-base text-gray-400">Connect with me on Discord.</p>
-                <div class="relative">
+                <p class="mb-6 text-sm md:text-base text-gray-400">Copy my Discord ID or Email, or visit my GitHub profile.</p>
+                <div class="relative space-y-4">
                     <button id="discord-button" class="brutalist-btn text-base md:text-xl">
                         ID: appuzlota
                     </button>
-                    <span id="copy-feedback" class="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300 whitespace-nowrap">COPIED</span>
+                    <span id="discord-copy-feedback" class="absolute left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300 whitespace-nowrap" style="bottom: -2rem;">COPIED</span>
+                    <button id="email-button" class="brutalist-btn text-base md:text-xl">
+                        Email: hello@appuzlota.me
+                    </button>
+                    <span id="email-copy-feedback" class="absolute left-1/2 -translate-x-1/2 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-md opacity-0 transition-all duration-300 whitespace-nowrap" style="bottom: -2rem;">COPIED</span>
+                    <a href="https://github.com/appuzlotatheog" target="_blank" rel="noopener noreferrer" class="brutalist-btn text-base md:text-xl">
+                        GitHub: appuzlotatheog
+                    </a>
                 </div>
             </div>
         </div>
@@ -1193,71 +1202,99 @@
             document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
 
             /*
-             * === Discord Button with Enhanced Feedback ===
+             * === Contact Buttons with Enhanced Feedback ===
              */
-            const discordButton = document.getElementById('discord-button');
-            const copyFeedback = document.getElementById('copy-feedback');
-            const discordId = 'appuzlota';
+            // Secure context check
+            function isSecureContext() {
+                return window.isSecureContext || location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+            }
 
-            if (discordButton && copyFeedback) {
-                discordButton.addEventListener('click', async (e) => {
-                    // Create ripple effect
-                    const ripple = document.createElement('span');
-                    const rect = discordButton.getBoundingClientRect();
-                    const size = Math.max(rect.width, rect.height);
-                    const x = e.clientX - rect.left - size / 2;
-                    const y = e.clientY - rect.top - size / 2;
-                    
-                    ripple.style.width = ripple.style.height = size + 'px';
-                    ripple.style.left = x + 'px';
-                    ripple.style.top = y + 'px';
-                    ripple.classList.add('ripple');
-                    
-                    discordButton.appendChild(ripple);
-                    
-                    setTimeout(() => ripple.remove(), 600);
-                    
-                    // Copy to clipboard
-                    try {
-                        if (navigator.clipboard && window.isSecureContext) {
-                            await navigator.clipboard.writeText(discordId);
-                        } else {
-                            // Fallback for older browsers
-                            const textArea = document.createElement('textarea');
-                            textArea.value = discordId;
-                            textArea.style.position = 'fixed';
-                            textArea.style.left = '-999999px';
-                            document.body.appendChild(textArea);
-                            textArea.select();
-                            document.execCommand('copy');
+            // Generic copy function with enhanced error handling
+            async function copyToClipboard(text, button, feedback) {
+                const ripple = document.createElement('span');
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = event.clientX - rect.left - size / 2;
+                const y = event.clientY - rect.top - size / 2;
+
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                button.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+
+                try {
+                    if (isSecureContext() && navigator.clipboard) {
+                        await navigator.clipboard.writeText(text);
+                        feedback.style.opacity = '1';
+                        feedback.style.transform = 'translate(-50%, -10px)';
+                        button.style.animation = 'success-pulse 0.5s ease';
+                        setTimeout(() => {
+                            feedback.style.opacity = '0';
+                            feedback.style.transform = 'translate(-50%, 0)';
+                            button.style.animation = '';
+                        }, 2000);
+                    } else {
+                        // Fallback for non-secure contexts or older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+                        try {
+                            const successful = document.execCommand('copy');
+                            if (successful) {
+                                feedback.style.opacity = '1';
+                                feedback.style.transform = 'translate(-50%, -10px)';
+                                button.style.animation = 'success-pulse 0.5s ease';
+                                setTimeout(() => {
+                                    feedback.style.opacity = '0';
+                                    feedback.style.transform = 'translate(-50%, 0)';
+                                    button.style.animation = '';
+                                }, 2000);
+                            } else {
+                                throw new Error('Copy command failed');
+                            }
+                        } finally {
                             document.body.removeChild(textArea);
                         }
-                        
-                        // Show feedback
-                        copyFeedback.style.opacity = '1';
-                        copyFeedback.style.transform = 'translate(-50%, -10px)';
-                        
-                        // Add success animation to button
-                        discordButton.style.animation = 'success-pulse 0.5s ease';
-                        
-                        setTimeout(() => {
-                            copyFeedback.style.opacity = '0';
-                            copyFeedback.style.transform = 'translate(-50%, 0)';
-                            discordButton.style.animation = '';
-                        }, 2000);
-                        
-                    } catch (err) {
-                        console.error('Failed to copy: ', err);
-                        copyFeedback.textContent = 'FAILED';
-                        copyFeedback.style.backgroundColor = '#FF0000';
-                        copyFeedback.style.opacity = '1';
-                        
-                        setTimeout(() => {
-                            copyFeedback.style.opacity = '0';
-                            copyFeedback.textContent = 'COPIED';
-                            copyFeedback.style.backgroundColor = '';
-                        }, 2000);
                     }
+                } catch (err) {
+                    console.error('Copy failed:', err.message || err);
+                    feedback.textContent = 'ERROR';
+                    feedback.style.backgroundColor = '#FF0000';
+                    feedback.style.opacity = '1';
+                    setTimeout(() => {
+                        feedback.style.opacity = '0';
+                        feedback.textContent = 'COPIED';
+                        feedback.style.backgroundColor = '';
+                    }, 2000);
+                }
+            }
+
+            // Discord Button
+            const discordButton = document.getElementById('discord-button');
+            const discordCopyFeedback = document.getElementById('discord-copy-feedback');
+            const discordId = 'appuzlota';
+
+            if (discordButton && discordCopyFeedback) {
+                discordButton.addEventListener('click', (e) => {
+                    copyToClipboard(discordId, discordButton, discordCopyFeedback);
+                });
+            }
+
+            // Email Button
+            const emailButton = document.getElementById('email-button');
+            const emailCopyFeedback = document.getElementById('email-copy-feedback');
+            const emailId = 'hello@appuzlota.me';
+
+            if (emailButton && emailCopyFeedback) {
+                emailButton.addEventListener('click', (e) => {
+                    copyToClipboard(emailId, emailButton, emailCopyFeedback);
                 });
             }
 
